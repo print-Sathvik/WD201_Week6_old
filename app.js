@@ -3,9 +3,16 @@ const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
+const path = require("path");
 
-app.get("/", function (request, response) {
-  response.send("Hello World");
+//Setting EJS as vie engine
+app.set("view engine", "ejs");
+
+//Location of static html and CSS files to render our application
+app.use(express.static(path.join(__dirname,'public')));
+
+app.get("/", (request, response) => {
+  response.render("index");
 });
 
 app.get("/todos", async function (request, response) {
