@@ -9,10 +9,17 @@ const path = require("path");
 app.set("view engine", "ejs");
 
 //Location of static html and CSS files to render our application
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (request, response) => {
-  response.render("index");
+app.get("/", async (request, response) => {
+  const allTodos = await Todo.getTodos();
+  if (request.accepts("html")) {
+    response.render("index", {
+      allTodos,
+    });
+  } else {
+    response.json({ allTodos });
+  }
 });
 
 app.get("/todos", async function (request, response) {

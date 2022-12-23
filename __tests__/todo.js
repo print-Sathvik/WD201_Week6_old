@@ -1,5 +1,5 @@
 const request = require("supertest");
-
+const { Todo } = require("../models");
 const db = require("../models/index");
 const app = require("../app");
 
@@ -49,8 +49,11 @@ describe("Todo Application", function () {
     const markCompleteResponse = await agent
       .put(`/todos/${todoID}/markASCompleted`)
       .send();
+    // eslint-disable-next-line no-unused-vars
     const parsedUpdateResponse = JSON.parse(markCompleteResponse.text);
-    expect(parsedUpdateResponse.completed).toBe(true);
+    //expect(parsedUpdateResponse.completed).toBe(true);
+    const todo = await Todo.findByPk(todoID);
+    expect(todo.completed).toBe(true);
   });
 
   test("Fetches all todos in the database using /todos endpoint", async () => {
