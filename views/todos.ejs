@@ -1,7 +1,5 @@
-<div class="flex gap-2 py-4">
     <h5>Overdue</h5>
     <h5 id="count-overdue" class="bg-gray-300 px-4"></h5>
-</div>
 <ul class="list-none">
     <% let countOverdue = 0;
     for(var i=0; i < allTodos.length; i++) {
@@ -24,10 +22,9 @@
     <script>document.getElementById("count-overdue").innerHTML = <%=countOverdue%></script>
 </ul>
 
-<div class="flex gap-2 py-4">
-    <h5>Due Today</h5>
-    <h5 id="count-due-today" class="bg-gray-300 px-4">5</h5>
-</div>
+
+<h5>Due Today</h5>
+<h5 id="count-due-today" class="bg-gray-300 px-4">5</h5>
 <ul class="list-none">
     <% let countdueToday = 0;
     for(var i=0; i < allTodos.length; i++) {
@@ -50,10 +47,9 @@
     <script>document.getElementById("count-due-today").innerHTML = <%=countdueToday%></script>
 </ul>
 
-<div class="flex gap-2 py-4">
-    <h5>Due Later</h5>
-    <h5 id="count-due-later" class="bg-gray-300 px-4">5</h5>
-</div>
+
+<h5>Due Later</h5>
+<h5 id="count-due-later" class="bg-gray-300 px-4">5</h5>
 <ul class="list-none">
     <% let countdueLater = 0;
     for(var i=0; i < allTodos.length; i++) {
