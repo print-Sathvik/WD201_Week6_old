@@ -1,4 +1,10 @@
 body {
-  background-color: lightblue;
+  background-color: white;
   font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.Todo-Item:hover
+.trash-icon
+{
+  display: block;
 }
