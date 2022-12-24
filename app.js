@@ -4,8 +4,9 @@ const { Todo } = require("./models");
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 const path = require("path");
+app.use(express.urlencoded({ extended: false }));
 
-//Setting EJS as vie engine
+//Setting EJS as view engine
 app.set("view engine", "ejs");
 
 //Location of static html and CSS files to render our application
@@ -50,8 +51,11 @@ app.get("/todos/:id", async function (request, response) {
 
 app.post("/todos", async function (request, response) {
   try {
-    const todo = await Todo.addTodo(request.body);
-    return response.json(todo);
+    await Todo.addTodo({
+      title: request.body.title,
+      dueDate: request.body.dueDate,
+    });
+    return response.redirect("/");
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
