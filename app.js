@@ -51,11 +51,16 @@ app.get("/todos/:id", async function (request, response) {
 
 app.post("/todos", async function (request, response) {
   try {
-    await Todo.addTodo({
+    const todo = await Todo.addTodo({
       title: request.body.title,
       dueDate: request.body.dueDate,
+      completed: false,
     });
-    return response.redirect("/");
+    if (request.accepts("html")) {
+      return response.redirect("/");
+    } else {
+      return response.json(todo);
+    }
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
@@ -73,6 +78,19 @@ app.put("/todos/:id/markAsCompleted", async function (request, response) {
   }
 });
 
+//New end point that will change the completion status true <==> false
+app.put("/todos/:id", async function (request, response) {
+  const todo = await Todo.findByPk(request.params.id);
+  const completeStatus = request.body.completed;
+  try {
+    const updatedTodo = await todo.setCompletionStatus(completeStatus);
+    return response.json(updatedTodo);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
 app.delete("/todos/:id", async function (request, response) {
   console.log("We have to delete a Todo with ID: ", request.params.id);
   // FILL IN YOUR CODE HERE
@@ -80,14 +98,11 @@ app.delete("/todos/:id", async function (request, response) {
   // First, we have to query our database to delete a Todo by ID.
   // Then, we have to respond back with true/false based on whether the Todo was deleted or not.
   // response.send(true)
-  const todo = await Todo.findByPk(request.params.id);
   try {
-    // eslint-disable-next-line no-unused-vars
-    const deletedTodo = await todo.destroy();
-    return response.send(true);
+    await Todo.remove(request.params.id);
+    return response.json({ success: true });
   } catch (error) {
-    console.log(error);
-    return response.send(false);
+    return response.status(422).json(error);
   }
 });
 

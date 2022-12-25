@@ -98,6 +98,25 @@ module.exports = (sequelize, DataTypes) => {
       );
     }
 
+    setCompletionStatus(checkStatus) {
+      return Todo.update(
+        { completed: checkStatus },
+        {
+          where: {
+            id: this.id,
+          },
+        }
+      );
+    }
+
+    static async remove(id) {
+      return this.destroy({
+        where: {
+          id,
+        },
+      });
+    }
+
     displayableString() {
       let checkbox = this.completed ? "[x]" : "[ ]";
       let today = new Date().toLocaleDateString("en-CA");
