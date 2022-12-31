@@ -17,27 +17,14 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", async (request, response) => {
-  //const allTodos = await Todo.getTodos();
-  const overdue = await Todo.overdue();
-  const dueToday = await Todo.dueToday();
-  const dueLater = await Todo.dueLater();
-  const completed = await Todo.completed();
+  const allTodos = await Todo.getTodos();
   if (request.accepts("html")) {
     response.render("index", {
-      title: "Todo Application",
-      overdue,
-      dueToday,
-      dueLater,
-      completed,
+      allTodos,
       csrfToken: request.csrfToken(),
     });
   } else {
-    response.json({
-      overdue,
-      dueToday,
-      dueLater,
-      completed,
-    });
+    response.json({ allTodos });
   }
 });
 
@@ -79,17 +66,6 @@ app.post("/todos", async function (request, response) {
     } else {
       return response.json(todo);
     }
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
-
-app.put("/todos/:id/markAsCompleted", async function (request, response) {
-  const todo = await Todo.findByPk(request.params.id);
-  try {
-    const updatedTodo = await todo.markAsCompleted();
-    return response.json(updatedTodo);
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);

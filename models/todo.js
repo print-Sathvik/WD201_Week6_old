@@ -54,7 +54,6 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: {
             [Op.lt]: today,
           },
-          completed: false,
         },
         order: [["id", "ASC"]],
       });
@@ -67,7 +66,6 @@ module.exports = (sequelize, DataTypes) => {
       const dueTodayTodos = await Todo.findAll({
         where: {
           dueDate: today,
-          completed: false,
         },
         order: [["id", "ASC"]],
       });
@@ -82,31 +80,10 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: {
             [Op.gt]: today,
           },
-          completed: false,
         },
         order: [["id", "ASC"]],
       });
       return dueLaterTodos;
-    }
-
-    static async completed() {
-      return this.findAll({
-        where: {
-          completed: true,
-        },
-      });
-    }
-
-    markAsCompleted() {
-      // FILL IN HERE TO MARK AN ITEM AS COMPLETE
-      return Todo.update(
-        { completed: true },
-        {
-          where: {
-            id: this.id,
-          },
-        }
-      );
     }
 
     setCompletionStatus(checkStatus) {

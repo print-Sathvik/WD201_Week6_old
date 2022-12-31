@@ -1,3 +1,7 @@
+//
+//ADDED THE MISSING TEST FOR RESUBMISSION
+//
+
 const request = require("supertest");
 var cheerio = require("cheerio");
 const db = require("../models/index");
@@ -77,6 +81,45 @@ describe("Todo Application", function () {
     expect(todo.completed).toBe(true);
   });
 
+  test("Marks a completed todo as INCOMPLETE", async () => {
+    let res = await agent.get("/");
+    let csrfToken = extractCsrfToken(res);
+    const response = await agent
+      .post("/todos")
+      .send({
+        title: "Buy milk",
+        dueDate: new Date().toISOString(),
+        completed: false,
+        _csrf: csrfToken,
+      })
+      .set("Accept", "application/json");
+    const parsedResponse = JSON.parse(response.text);
+    const todoID = parsedResponse.id;
+
+    expect(parsedResponse.completed).toBe(false);
+
+    res = await agent.get("/");
+    csrfToken = extractCsrfToken(res);
+
+    await agent.put(`/todos/${todoID}`).send({
+      completed: true,
+      _csrf: csrfToken,
+    });
+    let todo = await Todo.findByPk(todoID);
+    expect(todo.completed).toBe(true);
+
+    //Marking the same todo as incomplete
+    res = await agent.get("/");
+    csrfToken = extractCsrfToken(res);
+
+    await agent.put(`/todos/${todoID}`).send({
+      completed: false,
+      _csrf: csrfToken,
+    });
+    todo = await Todo.findByPk(todoID);
+    expect(todo.completed).toBe(false);
+  });
+
   test("Deletes a todo with the given ID if it exists and sends a boolean response", async () => {
     // FILL IN YOUR CODE HERE
     let res = await agent.get("/");
@@ -96,7 +139,7 @@ describe("Todo Application", function () {
     //****************************************
     //Note: Instead of getting all the todos and
     //finding the last inserted todo like in the video,
-    //I read the ID of todo which was last inserted in line 96-97
+    //I read the ID of todo which was last inserted in line 138
     //and checked its success status below which has same outcome
     //******************************************
 
